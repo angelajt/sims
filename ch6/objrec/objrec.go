@@ -22,6 +22,7 @@ import (
 	"cogentcore.org/core/base/randx"
 	"cogentcore.org/core/core"
 	"cogentcore.org/core/enums"
+	"cogentcore.org/core/htmlcore"
 	"cogentcore.org/core/icons"
 	"cogentcore.org/core/math32"
 	"cogentcore.org/core/math32/minmax"
@@ -47,6 +48,9 @@ import (
 
 //go:embed objrec_train1.wts.gz
 var content embed.FS
+
+//go:embed README.md
+var readme string
 
 func main() {
 	sim := &Sim{}
@@ -598,7 +602,7 @@ func (ss *Sim) ConfigActRFs() {
 // ConfigGUI configures the Cogent Core GUI interface for this simulation.
 func (ss *Sim) ConfigGUI() {
 	title := "Object Recognition"
-	ss.GUI.MakeBody(ss, "objrec", title, `This simulation explores how a hierarchy of areas in the ventral stream of visual processing (up to inferotemporal (IT) cortex) can produce robust object recognition that is invariant to changes in position, size, etc of retinal input images. See <a href="https://github.com/CompCogNeuro/sims/blob/main/ch6/objrec/README.md">README.md on GitHub</a>.</p>`)
+	ss.GUI.MakeBody(ss, "objrec", title, `This simulation explores how a hierarchy of areas in the ventral stream of visual processing (up to inferotemporal (IT) cortex) can produce robust object recognition that is invariant to changes in position, size, etc of retinal input images. See <a href="https://github.com/CompCogNeuro/sims/blob/main/ch6/objrec/README.md">README.md on GitHub</a>.</p>`, readme)
 	ss.GUI.CycleUpdateInterval = 10
 
 	nv := ss.GUI.AddNetView("Network")
@@ -624,6 +628,10 @@ func (ss *Sim) ConfigGUI() {
 	ss.GUI.AddActRFGridTabs(&ss.Stats.ActRFs)
 
 	ss.GUI.FinalizeGUI(false)
+
+	ctx := htmlcore.NewContext()
+	ctx.PageURL = "https://github.com/CompCogNeuro/sims/blob/main/ch6/objrec/"
+	htmlcore.ReadMDString(ctx, ss.GUI.ReadMe, readme)
 }
 
 func (ss *Sim) MakeToolbar(p *tree.Plan) {
